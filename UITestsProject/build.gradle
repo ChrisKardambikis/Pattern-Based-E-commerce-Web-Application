@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+group 'Proj1.generated'
+version '1.0'
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation  'org.junit.jupiter:junit-jupiter-api:5.6.0'
+
+    // Module "junit-jupiter-params" of JUnit 5.
+    testImplementation   group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.6.0'
+
+    // Use JUnit Jupiter Engine for testing.
+    testImplementation   'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+
+    implementation 'io.testproject:java-sdk:0.65.0-RELEASE'
+
+}

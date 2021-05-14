@@ -1,0 +1,122 @@
+body{
+    width: 100%;
+    background-image: url("../images/index_bg.jpeg");
+}
+
+#flightContainer{
+    width: 100%;
+    position: relative;
+    display: block;
+    padding: 5em;
+}
+
+#flightContainer::before{
+    content: "";
+    margin: 2em;
+    border-radius: 10px;
+    background-color: grey;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+
+}
+
+.alert{
+    padding: 5px;
+}
+
+.centerDiv{
+    /*background-color: white;*/
+    position: relative;
+    display: block;
+}
+
+.centerDiv::before{
+    content: "";
+    background-color: white;
+    opacity: 0.95;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.bookingComplete{
+    padding-top: 2em;
+}
+
+#updateForm {
+    display:none;
+}
+#formButton {
+    position: absolute;
+    top: 20px;
+}
+
+.ticketInfo{
+    border-radius: 20px;
+    background-color: white;
+    padding: 0;
+    margin-top: 2em;
+}
+
+.ticketInfo .table{
+    margin-bottom: 0;
+}
+
+
+.ticketInfoHeader{
+    background-color: #d4d4d4;
+    width: 100%;
+    padding: 0;
+    border-top-right-radius: 20px; -moz-border-radius-topright: 20px; -webkit-border-top-right-radius: 20px;
+    border-top-left-radius: 20px; -moz-border-radius-topleft: 20px; -webkit-border-top-left-radius: 20px;
+    font-weight: bold;
+    /*color: white;*/
+}
+
+.ticketInfoFooter{
+    background-color: #d4d4d4;
+    width: 100%;
+    padding: 0;
+    border-bottom-right-radius: 20px; -moz-border-radius-bottomrightright: 20px; -webkit-border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px; -moz-border-radius-bottomleft: 20px; -webkit-border-bottom-left-radius: 20px;
+    font-weight: bold;
+    /*color: white;*/
+}
+
+.vertLine{
+    border-left: 2px dotted #8a8a8a;
+}
+
+.subHeader{
+    padding: 1em 2em;
+}
+
+.subBody{
+    /*padding: 1em 2em;*/
+    padding: 0em 0em 0em 1em;
+}
+
+.subBodyRight{
+    /*padding: 1em 2em;*/
+    padding: 0em 1em 0em 0em;
+}
+
+.ticketInfoBody{
+    padding: 0;
+}
+
+.enjoyFlight{
+    padding: 0.5em 2em;
+}
+
+.capitalize{
+    text-transform: capitalize;
+}

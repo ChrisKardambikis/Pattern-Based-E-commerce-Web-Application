@@ -1,0 +1,6 @@
+io/testproject/generated/tests/proj1/GeneratedUtils.java
+ io.testproject.generated.tests.proj1.GeneratedUtils
+io/testproject/generated/tests/proj1/BasicSearchAndBook.java
+ io.testproject.generated.tests.proj1.BasicSearchAndBook
+io/testproject/generated/tests/proj1/StressTest.java
+ io.testproject.generated.tests.proj1.StressTest

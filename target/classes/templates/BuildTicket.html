@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Ticket</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/styleForCheckout.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+
+        window.onload= function () {
+            document.getElementById("finalPrice").value = document.getElementById("hiddenPrice").innerHTML;
+        }
+        function addToPrice() {
+            const radio_class = document.getElementsByName('radio_class');
+            const radio_insurance = document.getElementsByName('insurance');
+            const radio_age = document.getElementsByName('radio_age');
+            const quantity = document.getElementById('quantity').value;
+            const thePrice = document.getElementById("hiddenPrice").innerHTML;
+            var add = "0";
+            var percent = 0;
+            for (var i = 0, lengthC = radio_class.length; i < lengthC; i++) {
+                // alert("Hello");
+                if (radio_class[i].checked){
+                    if(radio_class[i].value === "first"){
+                        add = +add + 50;
+                    }
+                    if(radio_class[i].value === "business"){
+                        add = +add + 20;
+                    }
+
+                    break;
+                }
+            }
+            for (var j = 0, lengthR = radio_insurance.length; j < lengthR; j++) {
+                // alert("Hello");
+                if (radio_insurance[j].checked){
+                    if(radio_insurance[j].value === "yes"){
+                        add = +add + 20;
+                    }
+
+                    break;
+                }
+            }
+            for (var k = 0, lengthA = radio_age.length; k < lengthA; k++) {
+                if (radio_age[k].checked){
+                    if(radio_age[k].value === "child"){
+                        percent = 20/100;
+                    }
+                    break;
+                }
+            }
+            document.getElementById("finalPrice").value = (Math.round((+add - +thePrice*percent + +thePrice + +quantity*20 + Number.EPSILON) * 100) / 100).toString();
+            document.getElementById("price").innerHTML =  (Math.round((+add - +thePrice*percent + +thePrice + +quantity*20 + Number.EPSILON) * 100) / 100).toString();
+
+        }
+    </script>
+
+    <!-- Prevents the going back button!!  -->
+    <script type="text/javascript">
+        function preback(){
+            window.history.forward();}
+        setTimeout("preback()",0);
+        window.onunload=function(){
+            null
+        };
+    </script>
+</head>
+<body>
+<div id="navbar-temp"> </div>
+<script>
+    $(function(){
+        $("#navbar-temp").load("/navbar.html");
+    });
+</script>
+<h1>Ticket Information</h1>
+<div class="row">
+    <div class="col-50">
+        <div class="container">
+            <form class="col-12, form my-3" id="extraInfo"  action="#" th:action="@{/setTicketInformation}"  method="post">
+                <h3 style="text-align: center">Fill In Your Ticket Information</h3>
+                <div class="form-group">
+                        <h5> <i class="fa fa-user"></i> Class</h5>
+                        <input class="form-check-input" type="radio" id="first" name="radio_class" value="first"  onclick="addToPrice()"> First Class (Extra £50)
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="business" name="radio_class" value="business"  onclick="addToPrice()"> Business Class (Extra £20)
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="economy" name="radio_class"  value="economy"  onclick="addToPrice()" checked="checked"> Economy Class (No extra cost)
+                </div>
+                <hr>
+                <div class="form-group" >
+                        <h5> <i class="fa fa-user"></i> Age Group</h5>
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="adult" name="radio_age" value="adult"  onclick="addToPrice()" checked="checked"> Adult (Default price for 16+ years)
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="child" name="radio_age" value="child"  onclick="addToPrice()"> Child (Minus 20% for 0-15 years)
+                </div>
+                <hr>
+                <div class="form-group">
+                        <h5 ><i class="fa fa-life-ring"></i> Flight Insurance (Extra £20)</h5>
+                        <input type="checkbox" id="insurance" name="insurance"  value="yes" onclick="addToPrice()"> Add
+                </div>
+                <hr>
+                <div class="form-group">
+                        <h5><i class="fa fa-cutlery"></i> Meal (No extra cost)</h5>
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="omnivore" name="meal"  value="omnivore" checked="checked" > Omnivore
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="vegetarian" name="meal"  value="vegetarian" > Vegetarian
+                        <input style=" margin-left:10px" class="form-check-input" type="radio" id="vegan" name="meal"  value="vegan" > Vegan
+                </div>
+                <hr>
+                <div class="form-group">
+                        <h5><i class="fa fa-suitcase"></i> Extra Luggage (Extra £20)</h5>
+                        <input type="number" id="quantity" name="luggage" value="0" onchange="addToPrice()"  min="0" max="5" >
+                    <div hidden class="col-50">
+                        <input id="finalPrice" name="finalPrice" value="">
+                    </div>
+                    <button class="btn btn-dark btn-lg" id="btn-ticket" onclick="addNewTicket()"  type="submit" th:text="${button}" th:value="${button}" >Build Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-25" id="ticketDiv">
+        <div class="container">
+            <h4>Your Flight<span class="price" style="color:black" th:text=" 'ID: '+${flight.id}" th:value="${flight.id}" id="flightId">ID: </span> <i class="fa fa-plane"></i></h4>
+            <hr>
+            <p>From: <b th:text="${flight.from}" ></b></p>
+            <p>To: <b th:text="${flight.to}"></b></p>
+            <p>Date: <b th:text="${flight.date}"></b> </p>
+            <p>Departure:
+                <b th:if="*{flight.departureTime!=null and flight.departureTime=='NA'}" th:text="${flight.departureTime}"></b>
+                <b th:if="*{flight.departureTime!=null and #strings.length(flight.departureTime)==4 and flight.departureTime!='NA'}" th:text="${#strings.substring(flight.departureTime,0,2)} + ':'+${#strings.substring(flight.departureTime,2,4)}"></b>
+                <b th:if="*{flight.departureTime!=null and #strings.length(flight.departureTime)==3 and flight.departureTime!='NA'}" th:text="${#strings.substring(flight.departureTime,0,1)} + ':'+${#strings.substring(flight.departureTime,1,3)}"></b>
+                <b th:if="*{flight.departureTime!=null and #strings.length(flight.departureTime)==2 and flight.departureTime!='NA'}" th:text="'00:'+ ${flight.departureTime}"></b>
+                <b th:if="*{flight.departureTime!=null and #strings.length(flight.departureTime)==1 and flight.departureTime!='NA'}" th:text="'00:0'+ ${flight.departureTime}"></b>
+
+            </p>
+            <p>Arrival:
+                <b th:if="*{flight.arrivalTime!=null and flight.arrivalTime=='NA'}" th:text="${flight.arrivalTime}"></b>
+                <b th:if="*{flight.arrivalTime!=null and #strings.length(flight.arrivalTime)==4 and flight.arrivalTime!='NA'}" th:text="${#strings.substring(flight.arrivalTime,0,2)} + ':'+${#strings.substring(flight.arrivalTime,2,4)}"></b>
+                <b th:if="*{flight.arrivalTime!=null and #strings.length(flight.arrivalTime)==3 and flight.arrivalTime!='NA'}" th:text="${#strings.substring(flight.arrivalTime,0,1)} + ':'+${#strings.substring(flight.arrivalTime,1,3)}"></b>
+                <b th:if="*{flight.arrivalTime!=null and #strings.length(flight.arrivalTime)==2 and flight.arrivalTime!='NA'}" th:text=" '00:'+ ${flight.arrivalTime}"></b>
+                <b th:if="*{flight.arrivalTime!=null and #strings.length(flight.arrivalTime)==1 and flight.arrivalTime!='NA'}" th:text=" '00:0'+ ${flight.arrivalTime}"></b>
+            </p>
+            <hr>
+            <p>
+                Total
+                <span  class="price" style="color:black">
+                    £<b id="price" th:text=" ${flight.price} "></b>
+                </span>
+            </p>
+            <p hidden>
+                Total
+                <span  class="price" style="color:black">
+                    £<b id="hiddenPrice" th:text=" ${flight.price}" ></b>
+                </span>
+            </p>
+
+        </div>
+    </div>
+</div>
+<!--<button class="btn btn-primary" style="float: right" id="btn-pay" onclick="document.getElementById('extraInfo').submit();" type="submit">Pay</button>-->
+
+<div class="ticketTable">
+    <div class="row">
+        <div  th:if="${!tickets.isEmpty()}" class="container col-50">
+            <table class="table table-bordered border-dark" id="tickets">
+                <thead>
+                <h3 class="text-center">Added Tickets</h3>
+                <tr class="table-active">
+                    <th>Class</th>
+                    <th>Age Group</th>
+                    <th>Insurance</th>
+                    <th>Meal</th>
+                    <th>Luggage</th>
+                    <th>Price</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ticket : ${tickets}" >
+                    <td class="capitalize" th:text="${ticket.seatClass}">Class</td>
+                    <td class="capitalize" th:text="${ticket.ageGroup}">Age Group</td>
+                    <td class="capitalize" th:text="${ticket.insurance != null} ? ${ticket.insurance} : 'no'">insurance</td>
+                    <td class="capitalize" th:text="${ticket.meal}">Meal</td>
+                    <td class="capitalize" th:text="${ticket.luggage != null} ? ${ticket.luggage} : 'no'">Luggage</td>
+                    <td th:text="'£ '+${ticket.priceBought}">Price</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

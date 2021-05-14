@@ -1,0 +1,250 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Find Booking</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Code for smart Search bars --- ck -->
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+<body>
+<!--navbar-->
+<div id="navbar-temp"> </div>
+<script>
+  $(function(){
+    $("#navbar-temp").load("navbar.html");
+  });
+
+</script>
+<div class="container" id="flightContainer">
+  <h1 class="h1 text-center mt-3">Find Tickets</h1>
+  <form class="col-12, form my-3"  action="#"  th:action="@{/returnBooking}" method="post">
+    <div class="row mb-3">
+      <div class="col-10 my-1">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="2">Ticket Reference: </span>
+          <input type="text" class="form-control" name="bookingRef" th:value="${bookingRef}" aria-describedby="2" placeholder="1234567890"  id="bookingRef" required>
+        </div>
+      </div>
+      <div class="col-2 my-1">
+        <div class="alert alert-danger" th:if="${validation==false} and ${wrongBookingRef==true}">
+          <strong>Wrong Reference!</strong>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-10 my-1">
+        <div class="input-group">
+          <span class="input-group-text" id="3">Email: </span>
+          <input type="text" class="form-control" name="email" th:value="${email}" aria-describedby="3" placeholder="email@email.com"  id="email" required>
+        </div>
+      </div>
+      <div class="col-2 my-1">
+        <div class="alert alert-danger" role="alert" th:if="${validation==false} and ${wrongEmail==true}">
+          <strong>Wrong Email!</strong>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-dark btn-lg">Search</button>
+    </div>
+  </form>
+
+  <div class="alert alert-warning" th:if="(${validation==true} and ${wrongBookingRef==true}) or (${validation==true} and ${wrongEmail==true})">
+    <strong>
+      Hmmm...
+      There seems to be a problem with the flight information! Please contact the airlines to sort this out.</strong>
+  </div>
+
+  <div class="container-fluid" th:if="${validation==true} and ${wrongBookingRef==false} and ${wrongEmail==false}">
+    <h4 style="margin-top: 1.5em;">Here are your ticket details.</h4>
+    <div class="row content">
+<!--      <div class="col-sm-1"></div>-->
+      <div class="col-sm-12 ticketInfo">
+        <div class="ticketInfoHeader">
+          <div class="row content">
+            <div class="col-sm-8 subHeader">
+              Flight Info
+            </div>
+            <div class="col-sm-4 subHeader vertLine">
+              Ticket
+            </div>
+          </div>
+        </div>
+        <div class="ticketInfoBody">
+          <div class="row content">
+            <div class="col-sm-8 subBody">
+              <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                  <td><b>Flight Number: </b> <span th:text="${flightInfo.flightNumber}"></span></td>
+                  <td><b>Date:</b> <span th:text="${flightInfo.date}"></span></td>
+                </tr>
+                <tr>
+                  <td><b>From:</b> <span th:text="${flightInfo.from}"></span></td>
+                  <td><b>Departure time:</b>
+                    <span th:if="*{flightInfo.departureTime!=null and flightInfo.departureTime=='NA'}" th:text="${flightInfo.departureTime}"></span>
+                    <span th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==4 and flightInfo.departureTime!='NA'}" th:text="${#strings.substring(flightInfo.departureTime,0,2)} + ':'+${#strings.substring(flightInfo.departureTime,2,4)}"></span>
+                    <span th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==3 and flightInfo.departureTime!='NA'}" th:text="${#strings.substring(flightInfo.departureTime,0,1)} + ':'+${#strings.substring(flightInfo.departureTime,1,3)}"></span>
+                    <span th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==2 and flightInfo.departureTime!='NA'}" th:text="'00:'+${flightInfo.departureTime}"></span>
+                    <span th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==1 and flightInfo.departureTime!='NA'}" th:text="'00:0'+${flightInfo.departureTime}"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>To:</b> <span th:text="${flightInfo.to}"></span></td>
+                  <td><b>Arrival time:</b>
+                    <span th:if="*{flightInfo.arrivalTime!=null and flightInfo.arrivalTime=='NA'}" th:text="${flightInfo.arrivalTime}"></span>
+                    <span th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==4 and flightInfo.arrivalTime!='NA'}" th:text="${#strings.substring(flightInfo.arrivalTime,0,2)} + ':'+${#strings.substring(flightInfo.arrivalTime,2,4)}"></span>
+                    <span th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==3 and flightInfo.arrivalTime!='NA'}" th:text="${#strings.substring(flightInfo.arrivalTime,0,1)} + ':'+${#strings.substring(flightInfo.arrivalTime,1,3)}"></span>
+                    <span th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==2 and flightInfo.arrivalTime!='NA'}" th:text="'00:'+ ${flightInfo.arrivalTime}"></span>
+                    <span th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==1 and flightInfo.arrivalTime!='NA'}" th:text="'00:0'+ ${flightInfo.arrivalTime}"></span>
+                  </td>
+
+                </tr>
+                <tr>
+                  <td colspan="2"><b>Price:</b> <span th:text="'£' + ${ticketInfo.priceBought}"></span></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-sm-4 subBodyRight vertLine">
+              <table class="table table-striped table-bordered">
+                <tbody>
+                <tr>
+                  <td colspan="2"><b>Booking Ref:</b> <span th:text="${ticketInfo.bookingRef}"></span></td>
+                </tr>
+                <tr>
+                  <td colspan="2"><b>Ticket:</b> <span class="capitalize" th:text="${ticketInfo.ageGroup}"></span></td>
+                </tr>
+                <tr>
+                  <td class="capitalize" th:text="${ticketInfo.seatClass}"></td>
+                  <td class="capitalize" th:text="${ticketInfo.meal}"></td>
+                </tr>
+                <tr>
+                  <td><b>Insurance:</b>
+                    <span th:if="${ticketInfo.insurance==null}">No</span>
+                    <span th:if="${ticketInfo.insurance!=null}">Yes</span>
+                  </td>
+                  <td><b>Luggage:</b>
+                    <span th:if="${ticketInfo.luggage==null}">0</span>
+                    <span th:if="${ticketInfo.luggage!=null}" th:text="${ticketInfo.luggage}"></span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="ticketInfoFooter">
+          <div class="row content">
+            <div class="col-sm-8 enjoyFlight">
+              Enjoy your flight!
+            </div>
+            <div class="col-sm-4 vertLine"></div>
+          </div>
+
+        </div>
+<!--        <div class="col-sm-1"></div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--<table class="table" id="matchedBooking">-->
+<!--  <thead>-->
+<!--  <div class="alert alert-warning" th:if="(${validation==true} and ${wrongBookingRef==true}) or (${validation==true} and ${wrongEmail==true})">-->
+<!--    <strong>-->
+<!--      Hmmm...-->
+<!--      There seems to be a problem with the flight information! Please contact the airlines to sort this out.</strong>-->
+<!--  </div>-->
+<!--  <tr style="background: grey" class="table-active" th:if="${validation==true} and ${wrongBookingRef==false} and ${wrongEmail==false}">-->
+<!--    <th>Flight Number</th>-->
+<!--    <th>From</th>-->
+<!--    <th>To</th>-->
+<!--    <th>Departure Time</th>-->
+<!--    <th>Arrival Time</th>-->
+<!--    <th>Date</th>-->
+<!--    <th>Price</th>-->
+<!--  </tr>-->
+<!--  </thead>-->
+<!--  <tbody>-->
+<!--  <tr th:if="${validation==false} and ${wrongEmail==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="${validation==false} and ${wrongBookingRef==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="(${validation==true} and ${wrongBookingRef==true}) or (${validation==true} and ${wrongEmail==true})">-->
+<!--  </tr>-->
+<!--  <tr style="background: rgb(225,225,224)" th:if="${validation==true} and ${wrongBookingRef==false} and ${wrongEmail==false}">-->
+<!--    <td th:text="${flightInfo.flightNumber}">Flight Number</td>-->
+<!--    <td th:text="${flightInfo.from}">From</td>-->
+<!--    <td th:text="${flightInfo.to}">To</td>-->
+<!--    &lt;!&ndash;                        <td th:text="${flightInfo.departureTime}">Departure Time</td>&ndash;&gt;-->
+<!--    <td th:if="*{flightInfo.departureTime!=null and flightInfo.departureTime=='NA'}" th:text="${flightInfo.departureTime}">Departure Time</td>-->
+<!--    <td th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==4 and flightInfo.departureTime!='NA'}" th:text="${#strings.substring(flightInfo.departureTime,0,2)} + ':'+${#strings.substring(flightInfo.departureTime,2,4)}">Departure Time</td>-->
+<!--    <td th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==3 and flightInfo.departureTime!='NA'}" th:text="${#strings.substring(flightInfo.departureTime,0,1)} + ':'+${#strings.substring(flightInfo.departureTime,1,3)}">Departure Time</td>-->
+<!--    <td th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==2 and flightInfo.departureTime!='NA'}" th:text="'00:'+${flightInfo.departureTime}">Departure Time</td>-->
+<!--    <td th:if="*{flightInfo.departureTime!=null and #strings.length(flightInfo.departureTime)==1 and flightInfo.departureTime!='NA'}" th:text="'00:0'+${flightInfo.departureTime}">Departure Time</td>-->
+
+<!--    &lt;!&ndash;                        <td th:text="${flightInfo.arrivalTime}">Arrival Time</td>&ndash;&gt;-->
+<!--    <td th:if="*{flightInfo.arrivalTime!=null and flightInfo.arrivalTime=='NA'}" th:text="${flightInfo.arrivalTime}">Arrival Time</td>-->
+<!--    <td th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==4 and flightInfo.arrivalTime!='NA'}" th:text="${#strings.substring(flightInfo.arrivalTime,0,2)} + ':'+${#strings.substring(flightInfo.arrivalTime,2,4)}">Arrival Time</td>-->
+<!--    <td th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==3 and flightInfo.arrivalTime!='NA'}" th:text="${#strings.substring(flightInfo.arrivalTime,0,1)} + ':'+${#strings.substring(flightInfo.arrivalTime,1,3)}">Arrival Time</td>-->
+<!--    <td th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==2 and flightInfo.arrivalTime!='NA'}" th:text="'00:'+ ${flightInfo.arrivalTime}">Arrival Time</td>-->
+<!--    <td th:if="*{flightInfo.arrivalTime!=null and #strings.length(flightInfo.arrivalTime)==1 and flightInfo.arrivalTime!='NA'}" th:text="'00:0'+ ${flightInfo.arrivalTime}">Arrival Time</td>-->
+
+<!--    <td th:text="${flightInfo.date}">Date</td>-->
+<!--    <td th:text="'£' + ${ticketInfo.priceBought}">Price</td>-->
+<!--  </tr>-->
+<!--  </tbody>-->
+<!--</table>-->
+
+<!--<table class="table" id="bookingInformatiom">-->
+<!--  <thead>-->
+<!--  <tr th:if="${validation==false} and ${wrongEmail==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="${validation==false} and ${wrongBookingRef==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="(${validation==true} and ${wrongBookingRef==true}) or (${validation==true} and ${wrongEmail==true})">-->
+<!--  </tr>-->
+<!--  <tr style="background: grey" class="table-active" th:if="${validation==true} and ${wrongBookingRef==false} and ${wrongEmail==false}">-->
+<!--    <th>Booking Reference</th>-->
+<!--    <th>Class</th>-->
+<!--    <th>Meal</th>-->
+<!--    <th>Insurance</th>-->
+<!--    <th>Luggage</th>-->
+<!--    <th>Age</th>-->
+<!--  </tr>-->
+<!--  </thead>-->
+<!--  <tbody>-->
+<!--  <tr th:if="${validation==false} and ${wrongEmail==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="${validation==false} and ${wrongBookingRef==true}">-->
+<!--  </tr>-->
+<!--  <tr th:if="(${validation==true} and ${wrongBookingRef==true}) or (${validation==true} and ${wrongEmail==true})">-->
+<!--  </tr>-->
+<!--  <tr style="background: rgb(225,225,224)" th:if="${validation==true} and ${wrongBookingRef==false} and ${wrongEmail==false}">-->
+<!--    <td th:text="${ticketInfo.bookingRef}">Booking Reference</td>-->
+<!--    <td th:text="${ticketInfo.seatClass}">Class</td>-->
+<!--    <td th:text="${ticketInfo.meal}">Meal</td>-->
+<!--    <td th:if="${ticketInfo.insurance!=null}" th:text="${ticketInfo.insurance}">Insurance</td>-->
+<!--    <td th:if="${ticketInfo.insurance==null}">no</td>-->
+<!--    <td th:if="${ticketInfo.luggage!=null}" th:text="${ticketInfo.luggage}">Insurance</td>-->
+<!--    <td th:if="${ticketInfo.luggage==null}">no</td>-->
+<!--    <td th:text="${ticketInfo.ageGroup}">Age</td>-->
+<!--  </tr>-->
+<!--  </tbody>-->
+<!--</table>-->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+</body>
+</html>
